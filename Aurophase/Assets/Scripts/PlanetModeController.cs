@@ -5,22 +5,33 @@ public class PlanetModeController : MonoBehaviour
     [Header("Planet Mode")]
     [SerializeField] private GameObject planetMode;
 
-    public void OpenPlanets()
+    private void Awake()
     {
         if (planetMode == null)
         {
-            Debug.LogError("PlanetModeController: Planet Mode is not assigned.");
+            Debug.LogError(
+                "PlanetModeController: Planet Mode reference is NOT assigned."
+            );
+            return;
+        }
+
+        planetMode.SetActive(false);
+    }
+
+    public void ShowPlanets()
+    {
+        Debug.Log("PLANETS BUTTON PRESSED");
+
+        if (planetMode == null)
+        {
+            Debug.LogError(
+                "PlanetModeController: Planet Mode reference is missing."
+            );
             return;
         }
 
         planetMode.SetActive(true);
-    }
 
-    public void ClosePlanets()
-    {
-        if (planetMode == null)
-            return;
-
-        planetMode.SetActive(false);
+        Debug.Log("Planet Mode ACTIVATED");
     }
 }

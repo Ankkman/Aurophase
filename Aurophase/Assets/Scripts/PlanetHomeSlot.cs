@@ -8,16 +8,14 @@ public class PlanetHomeSlot : MonoBehaviour
     [Header("Return Settings")]
     [SerializeField] private float returnDistance = 0.35f;
 
-    private bool isBeingGrabbed;
-
     public void OnGrab()
     {
-        isBeingGrabbed = true;
+        // Reserved for future interaction effects.
+        // Example: highlight the planet's home slot.
     }
 
     public void OnRelease()
     {
-        isBeingGrabbed = false;
         TryReturnHome();
     }
 
