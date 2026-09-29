@@ -20,12 +20,20 @@ public class PlanetInfoSelector : MonoBehaviour
         if (infoData == null)
         {
             Debug.LogWarning(
-                gameObject.name +
-                " does not have PlanetInfoData."
+                gameObject.name + " does not have PlanetInfoData."
             );
             return;
         }
 
         PlanetInfoManager.Instance.ShowPlanetInfo(infoData);
+    }
+
+    // Called when this planet successfully returns to ANY slot.
+    public void PlanetReturnedToSlot()
+    {
+        if (PlanetInfoManager.Instance == null)
+            return;
+
+        PlanetInfoManager.Instance.HidePlanetInfoForPlanet(infoData);
     }
 }

@@ -78,56 +78,144 @@ namespace MyGame.Ui
 
             dividerLayout.minHeight = 2;
 
-            // Diameter
-            CreateStat(content.transform, "DIAMETER", "12,742 km");
-
-            // Orbital period
-            CreateStat(content.transform, "ORBITAL PERIOD", "365.25 days");
-
-            // Distance
-            CreateStat(content.transform, "DISTANCE FROM SUN", "149.6 million km");
+            // Statistics Grid
+            CreateStatsGrid(content.transform);
 
             Debug.Log("Planet Info Panel built successfully.");
         }
 
-        private void CreateStat(
-            Transform parent,
-            string label,
-            string value)
-        {
-            GameObject stat = CreateUIObject(label + "_Container", parent);
+        private void CreateStatsGrid(Transform parent)
+{
+    GameObject gridObject = CreateUIObject("StatsGrid", parent);
 
-            VerticalLayoutGroup layout =
-                stat.AddComponent<VerticalLayoutGroup>();
+    RectTransform gridRect = gridObject.GetComponent<RectTransform>();
 
-            layout.spacing = 2;
-            layout.childControlWidth = true;
-            layout.childControlHeight = false;
-            layout.childForceExpandWidth = true;
-            layout.childForceExpandHeight = false;
+    GridLayoutGroup grid = gridObject.AddComponent<GridLayoutGroup>();
 
-            CreateText(
-                label + "_Label",
-                label,
-                stat.transform,
-                16,
-                FontStyles.Bold
-            );
+    // Two-column layout
+    grid.constraint = GridLayoutGroup.Constraint.FixedColumnCount;
+    grid.constraintCount = 2;
 
-            CreateText(
-                label + "_Value",
-                value,
-                stat.transform,
-                26,
-                FontStyles.Normal
-            );
+    // Size of each information block
+    grid.cellSize = new Vector2(300f, 70f);
 
-            LayoutElement statLayout =
-                stat.AddComponent<LayoutElement>();
+    // Space between columns and rows
+    grid.spacing = new Vector2(20f, 18f);
 
-            statLayout.minHeight = 55;
-        }
+    grid.childAlignment = TextAnchor.UpperLeft;
 
+    // Make the grid fit inside the panel
+    gridRect.anchorMin = new Vector2(0f, 0f);
+    gridRect.anchorMax = new Vector2(1f, 0f);
+
+    gridRect.pivot = new Vector2(0.5f, 0f);
+
+    gridRect.offsetMin = Vector2.zero;
+    gridRect.offsetMax = Vector2.zero;
+
+    // Current content:
+    // 3 stats = 2 rows
+    LayoutElement gridLayout = gridObject.AddComponent<LayoutElement>();
+    gridLayout.preferredHeight = 158f;
+
+    // -----------------------------
+    // Row 1
+    // -----------------------------
+
+    CreateStat(
+        gridObject.transform,
+        "DIAMETER",
+        "12,742 km"
+    );
+
+    CreateStat(
+        gridObject.transform,
+        "ORBITAL PERIOD",
+        "365.25 days"
+    );
+
+    // -----------------------------
+    // Row 2
+    // -----------------------------
+
+    CreateStat(
+        gridObject.transform,
+        "DISTANCE FROM SUN",
+        "149.6 million km"
+    );
+
+    Debug.Log("Planet statistics grid created.");
+}
+
+
+    private void CreateStat(
+        Transform parent,
+        string label,
+        string value)
+    {
+        GameObject stat = CreateUIObject(
+            label + "_Container",
+            parent
+        );
+
+        RectTransform statRect =
+            stat.GetComponent<RectTransform>();
+
+        // -----------------------------------------
+        // Vertical layout inside each grid cell
+        // -----------------------------------------
+
+        VerticalLayoutGroup layout =
+            stat.AddComponent<VerticalLayoutGroup>();
+
+        layout.spacing = 3f;
+
+        layout.childControlWidth = true;
+        layout.childControlHeight = false;
+
+        layout.childForceExpandWidth = true;
+        layout.childForceExpandHeight = false;
+
+        layout.childAlignment = TextAnchor.UpperLeft;
+
+        // -----------------------------------------
+        // Label
+        // -----------------------------------------
+
+        TMP_Text labelText = CreateText(
+            label + "_Label",
+            label,
+            stat.transform,
+            15,
+            FontStyles.Bold
+        );
+
+        labelText.color =
+            new Color(1f, 1f, 1f, 0.65f);
+
+        // -----------------------------------------
+        // Value
+        // -----------------------------------------
+
+        TMP_Text valueText = CreateText(
+            label + "_Value",
+            value,
+            stat.transform,
+            25,
+            FontStyles.Normal
+        );
+
+        valueText.color = Color.white;
+
+        // -----------------------------------------
+        // Cell height
+        // -----------------------------------------
+
+        LayoutElement statLayout =
+            stat.AddComponent<LayoutElement>();
+
+        statLayout.preferredHeight = 70f;
+    }
         private TMP_Text CreateText(
             string objectName,
             string text,
@@ -147,7 +235,7 @@ namespace MyGame.Ui
 
             tmp.alignment = TextAlignmentOptions.Left;
             tmp.enableWordWrapping = true;
-            tmp.overflowMode = TextOverflowModes.Ellipsis;
+            tmp.overflowMode = TextOverflowModes.Overflow;
 
             LayoutElement layout =
                 obj.AddComponent<LayoutElement>();

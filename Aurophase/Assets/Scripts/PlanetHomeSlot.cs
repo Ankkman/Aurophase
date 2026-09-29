@@ -1,47 +1,296 @@
+using System.Collections;
 using UnityEngine;
 
 public class PlanetHomeSlot : MonoBehaviour
 {
-    [Header("Home Slot")]
-    [SerializeField] private Transform homeSlot;
+    [Header("Object Type")]
+    [SerializeField] private bool isSlotObject = false;
 
-    [Header("Return Settings")]
-    [SerializeField] private float returnDistance = 0.35f;
+    [Header("Slot Placement")]
+    [SerializeField] private float placementDistance = 0.35f;
+
+    [Header("Slot Visual")]
+    [SerializeField] private GameObject emptySlotIndicator;
+
+    [Header("Information Panel")]
+    [SerializeField] private PlanetInfoSelector infoSelector;
+
+    private PlanetHomeSlot currentSlot;
+    private PlanetHomeSlot occupyingPlanet;
+
+    private Vector3 defaultPlanetScale;
+    private Quaternion defaultPlanetRotation;
+
+
+    // =========================================================
+    // PROPERTIES
+    // =========================================================
+
+    public bool IsEmpty
+    {
+        get
+        {
+            return occupyingPlanet == null;
+        }
+    }
+
+    public PlanetHomeSlot OccupyingPlanet
+    {
+        get
+        {
+            return occupyingPlanet;
+        }
+    }
+
+    public PlanetHomeSlot CurrentSlot
+    {
+        get
+        {
+            return currentSlot;
+        }
+    }
+
+
+    // =========================================================
+    // AWAKE
+    // =========================================================
+
+    private void Awake()
+    {
+        if (!isSlotObject && infoSelector == null)
+        {
+            infoSelector =
+                GetComponent<PlanetInfoSelector>();
+        }
+
+        if (!isSlotObject)
+        {
+            defaultPlanetScale =
+                transform.localScale;
+
+            defaultPlanetRotation =
+                transform.rotation;
+        }
+    }
+
+
+    // =========================================================
+    // START
+    // =========================================================
+
+    private void Start()
+    {
+        if (isSlotObject)
+        {
+            if (PlanetSlotManager.Instance != null)
+            {
+                PlanetSlotManager.Instance.RegisterSlot(this);
+            }
+
+            UpdateSlotVisual();
+        }
+    }
+
+
+    // =========================================================
+    // ON ENABLE
+    // =========================================================
+
+    private void OnEnable()
+    {
+        if (isSlotObject)
+            return;
+
+        StartCoroutine(InitializePlanetNextFrame());
+    }
+
+
+    private IEnumerator InitializePlanetNextFrame()
+    {
+        // Wait until all objects that became active together
+        // have completed their activation.
+        yield return null;
+
+        if (PlanetSlotManager.Instance != null)
+        {
+            PlanetSlotManager.Instance
+                .InitializePlanetIfAtSlot(this);
+        }
+    }
+
+
+    // =========================================================
+    // DESTROY
+    // =========================================================
+
+    private void OnDestroy()
+    {
+        if (isSlotObject &&
+            PlanetSlotManager.Instance != null)
+        {
+            PlanetSlotManager.Instance
+                .UnregisterSlot(this);
+        }
+    }
+
+
+    // =========================================================
+    // GRAB
+    // =========================================================
 
     public void OnGrab()
     {
-        // Reserved for future interaction effects.
-        // Example: highlight the planet's home slot.
+        if (isSlotObject)
+            return;
+
+        // CRITICAL:
+        // Free the current slot immediately.
+        DetachFromCurrentSlot();
+
+        // Show planet information.
+        if (infoSelector != null)
+        {
+            infoSelector.SelectPlanet();
+        }
     }
+
+
+    // =========================================================
+    // RELEASE
+    // =========================================================
 
     public void OnRelease()
     {
-        TryReturnHome();
-    }
+        if (isSlotObject)
+            return;
 
-    private void TryReturnHome()
-    {
-        if (homeSlot == null)
+        if (PlanetSlotManager.Instance == null)
         {
-            Debug.LogWarning($"{name}: Home Slot is not assigned.");
+            Debug.LogWarning(
+                "PlanetSlotManager not found."
+            );
+
             return;
         }
 
-        float distance = Vector3.Distance(
-            transform.position,
-            homeSlot.position
-        );
-
-        if (distance <= returnDistance)
-        {
-            ReturnHome();
-        }
+        PlanetSlotManager.Instance
+            .TryPlacePlanet(this);
     }
 
-    private void ReturnHome()
+
+    // =========================================================
+    // DETACH FROM SLOT
+    // =========================================================
+
+    private void DetachFromCurrentSlot()
     {
-        transform.position = homeSlot.position;
-        transform.rotation = homeSlot.rotation;
-        transform.localScale = homeSlot.localScale;
+        if (currentSlot == null)
+            return;
+
+        if (currentSlot.occupyingPlanet == this)
+        {
+            currentSlot.occupyingPlanet = null;
+
+            // SLOT IS NOW EMPTY.
+            // Sphere appears immediately.
+            currentSlot.UpdateSlotVisual();
+        }
+
+        currentSlot = null;
+    }
+
+
+    // =========================================================
+    // ASSIGN TO SLOT
+    // =========================================================
+
+    public void AssignToSlot(
+        PlanetHomeSlot newSlot)
+    {
+        if (newSlot == null)
+            return;
+
+        // Never allow two planets in one slot.
+        if (newSlot.occupyingPlanet != null &&
+            newSlot.occupyingPlanet != this)
+        {
+            Debug.LogWarning(
+                $"{newSlot.name} is already occupied."
+            );
+
+            return;
+        }
+
+        // Remove from previous slot.
+        if (currentSlot != null &&
+            currentSlot != newSlot)
+        {
+            if (currentSlot.occupyingPlanet == this)
+            {
+                currentSlot.occupyingPlanet = null;
+                currentSlot.UpdateSlotVisual();
+            }
+        }
+
+        currentSlot = newSlot;
+
+        newSlot.occupyingPlanet = this;
+
+        // Occupied → sphere OFF.
+        newSlot.UpdateSlotVisual();
+
+        // Planet successfully returned to a slot.
+        if (infoSelector != null)
+        {
+            infoSelector.PlanetReturnedToSlot();
+        }
+
+    }
+
+
+    // =========================================================
+    // DEFAULT SCALE
+    // =========================================================
+
+    public Vector3 GetDefaultPlanetScale()
+    {
+        return defaultPlanetScale;
+    }
+
+
+    // =========================================================
+    // DEFAULT ROTATION
+    // =========================================================
+
+    public Quaternion GetDefaultPlanetRotation()
+    {
+        return defaultPlanetRotation;
+    }
+
+
+    // =========================================================
+    // IS PLANET
+    // =========================================================
+
+    public bool IsPlanet()
+    {
+        return !isSlotObject;
+    }
+
+
+    // =========================================================
+    // SLOT VISUAL
+    // =========================================================
+
+    public void UpdateSlotVisual()
+    {
+        if (!isSlotObject)
+            return;
+
+        if (emptySlotIndicator == null)
+            return;
+
+        // ONLY EMPTY SLOTS SHOW THEIR SPHERE.
+        emptySlotIndicator.SetActive(IsEmpty);
     }
 }

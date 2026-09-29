@@ -1,5 +1,6 @@
 using UnityEngine;
 using TMPro;
+using System.Collections.Generic;
 
 public class PlanetInfoManager : MonoBehaviour
 {
@@ -17,47 +18,75 @@ public class PlanetInfoManager : MonoBehaviour
     [Header("Canvas Transform")]
     [SerializeField] private Transform infoCanvasTransform;
 
-    [Header("Panel Position")]
-    [Tooltip("World-space X offset from the selected planet.")]
-    [SerializeField] private float horizontalOffset = 0.65f;
+    // =========================================================
+    // DEFAULT PANEL POSITION
+    // =========================================================
 
-    [Tooltip("World-space Y offset from the selected planet.")]
-    [SerializeField] private float verticalOffset = 0.15f;
+    [Header("Default Panel Position")]
 
-    [Tooltip("World-space Z offset from the selected planet.")]
-    [SerializeField] private float depthOffset = 0f;
+    [Tooltip("Default horizontal distance from the planet center.")]
+    [SerializeField] private float defaultHorizontalOffset = 0.13f;
+
+    [Tooltip("Default vertical distance from the planet center.")]
+    [SerializeField] private float defaultVerticalOffset = 0f;
+
+    [Tooltip("Default depth offset from the planet.")]
+    [SerializeField] private float defaultDepthOffset = 0f;
+
+    // =========================================================
+    // DEFAULT PANEL SCALE
+    // =========================================================
+
+    [Header("Default Panel Scale")]
+
+    [Tooltip("Panel scale when the planet is at its default size.")]
+    [SerializeField] private float defaultPanelScale = 0.3f;
+
+    // =========================================================
+    // BEHAVIOUR
+    // =========================================================
+
+    [Header("Scaling Behaviour")]
+
+    [Tooltip("Scale the panel position together with the planet.")]
+    [SerializeField] private bool scalePositionWithPlanet = true;
+
+    [Tooltip("Scale the panel size together with the planet.")]
+    [SerializeField] private bool scalePanelWithPlanet = true;
+
+    // =========================================================
+    // PANEL FACING
+    // =========================================================
 
     [Header("Panel Facing")]
+
     [SerializeField] private bool alwaysFaceUser = true;
 
     [Tooltip("Enable if the panel appears visually backwards.")]
-    [SerializeField] private bool flipPanel = false;
+    [SerializeField] private bool flipPanel = true;
 
-    [Header("Panel Scaling")]
-    [SerializeField] private float referencePlanetScale = 0.05f;
-
-    [Tooltip("Panel size when the planet is at or below its minimum reference scale.")]
-    [SerializeField] private float minimumPanelScale = 0.55f;
-
-    [Tooltip("Panel size when the planet reaches its normal/reference scale.")]
-    [SerializeField] private float normalPanelScale = 1.0f;
-
-    [Tooltip("Maximum size the information panel can reach.")]
-    [SerializeField] private float maximumPanelScale = 1.0f;
-
-    [Tooltip("Planet scale multiplier at which the panel reaches maximum size.")]
-    [SerializeField] private float maximumPlanetScaleMultiplier = 2.0f;
-
-    [SerializeField] private float panelScaleMultiplier = 1.0f;
+    // =========================================================
+    // INTERNAL
+    // =========================================================
 
     private PlanetInfoData selectedPlanet;
+
     private Camera mainCamera;
 
-    // Original panel scale
     private Vector3 originalPanelScale;
 
-    // Scale of the selected planet when information was opened
-    private Vector3 selectedPlanetInitialScale;
+    // Stores the default scale of each planet.
+    // This prevents re-grabbing from resetting the reference.
+    private Dictionary<Transform, Vector3> planetReferenceScales =
+        new Dictionary<Transform, Vector3>();
+
+    // Direction chosen when the panel is first shown.
+    // This prevents the panel from following the headset.
+    private Vector3 fixedPanelDirection;
+
+    // =========================================================
+    // UNITY
+    // =========================================================
 
     private void Awake()
     {
@@ -73,7 +102,8 @@ public class PlanetInfoManager : MonoBehaviour
 
         if (infoCanvasTransform != null)
         {
-            originalPanelScale = infoCanvasTransform.localScale;
+            originalPanelScale =
+                infoCanvasTransform.localScale;
         }
 
         if (infoCanvas != null)
@@ -87,9 +117,12 @@ public class PlanetInfoManager : MonoBehaviour
         if (selectedPlanet == null)
             return;
 
-        UpdatePanelPositionAndRotation();
-        UpdatePanelScale();
+        UpdatePanel();
     }
+
+    // =========================================================
+    // SHOW PLANET INFO
+    // =========================================================
 
     public void ShowPlanetInfo(PlanetInfoData data)
     {
@@ -98,59 +131,139 @@ public class PlanetInfoManager : MonoBehaviour
 
         selectedPlanet = data;
 
-        // -----------------------------------------
-        // Store the planet's scale when selected
-        // -----------------------------------------
+        Transform planet =
+            selectedPlanet.transform;
 
-        selectedPlanetInitialScale = selectedPlanet.transform.localScale;
+        if (mainCamera == null)
+            mainCamera = Camera.main;
 
-        // -----------------------------------------
-        // Fill UI
-        // -----------------------------------------
+        // =====================================================
+        // SAVE DEFAULT PLANET SCALE
+        // =====================================================
+        //
+        // IMPORTANT:
+        //
+        // Only save this the FIRST time this planet is selected.
+        //
+        // Therefore:
+        //
+        // Default Earth = reference
+        //
+        // Grab Earth → scale Earth → release
+        //
+        // Grab Earth again
+        //
+        // The reference does NOT change.
+        //
+
+        if (!planetReferenceScales.ContainsKey(planet))
+        {
+            planetReferenceScales.Add(
+                planet,
+                planet.localScale
+            );
+        }
+
+        // =====================================================
+        // DETERMINE PANEL SIDE
+        // =====================================================
+
+        if (mainCamera != null)
+        {
+            fixedPanelDirection =
+                mainCamera.transform.right;
+
+            // Keep direction horizontal.
+            fixedPanelDirection.y = 0f;
+
+            if (fixedPanelDirection.sqrMagnitude < 0.001f)
+            {
+                fixedPanelDirection = Vector3.right;
+            }
+            else
+            {
+                fixedPanelDirection.Normalize();
+            }
+        }
+        else
+        {
+            fixedPanelDirection = Vector3.right;
+        }
+
+        // =====================================================
+        // FILL TEXT
+        // =====================================================
 
         if (planetNameText != null)
-            planetNameText.text = data.planetName;
+            planetNameText.text =
+                data.planetName;
 
         if (descriptionText != null)
-            descriptionText.text = data.description;
+            descriptionText.text =
+                data.description;
 
         if (diameterText != null)
-            diameterText.text = data.diameter;
+            diameterText.text =
+                data.diameter;
 
         if (orbitalPeriodText != null)
-            orbitalPeriodText.text = data.orbitalPeriod;
+            orbitalPeriodText.text =
+                data.orbitalPeriod;
 
         if (distanceFromSunText != null)
-            distanceFromSunText.text = data.distanceFromSun;
+            distanceFromSunText.text =
+                data.distanceFromSun;
 
-        // -----------------------------------------
-        // Show panel
-        // -----------------------------------------
+        // =====================================================
+        // SHOW
+        // =====================================================
 
         if (infoCanvas != null)
             infoCanvas.SetActive(true);
 
-        UpdatePanelPositionAndRotation();
-        UpdatePanelScale();
+        UpdatePanel();
     }
+
+    // =========================================================
+    // HIDE
+    // =========================================================
 
     public void HidePlanetInfo()
     {
         selectedPlanet = null;
 
-        // Restore original panel size
         if (infoCanvasTransform != null)
         {
             infoCanvasTransform.localScale = originalPanelScale;
         }
 
         if (infoCanvas != null)
+        {
             infoCanvas.SetActive(false);
+        }
     }
 
-    private void UpdatePanelPositionAndRotation()
+    public void HidePlanetInfoForPlanet(PlanetInfoData planetData)
     {
-        if (selectedPlanet == null || infoCanvasTransform == null)
+        if (planetData == null)
+            return;
+
+        // Only hide the panel if this is the planet currently
+        // being displayed.
+        if (selectedPlanet == planetData)
+        {
+            HidePlanetInfo();
+        }
+    }
+
+    // =========================================================
+    // MAIN PANEL UPDATE
+    // =========================================================
+
+    private void UpdatePanel()
+    {
+        if (selectedPlanet == null ||
+            infoCanvasTransform == null)
             return;
 
         if (mainCamera == null)
@@ -159,53 +272,98 @@ public class PlanetInfoManager : MonoBehaviour
         if (mainCamera == null)
             return;
 
-        Transform planet = selectedPlanet.transform;
+        Transform planet =
+            selectedPlanet.transform;
 
-        // =========================================================
+        // =====================================================
+        // GET DEFAULT PLANET SCALE
+        // =====================================================
+
+        if (!planetReferenceScales.TryGetValue(
+                planet,
+                out Vector3 referenceScale))
+        {
+            referenceScale =
+                planet.localScale;
+
+            planetReferenceScales.Add(
+                planet,
+                referenceScale
+            );
+        }
+
+        // =====================================================
+        // CALCULATE RELATIVE PLANET SCALE
+        // =====================================================
+        //
+        // Example:
+        //
+        // Default = 0.05
+        // Current = 0.10
+        //
+        // Relative = 2
+        //
+        // Therefore:
+        //
+        // Panel position = 2×
+        // Panel size     = 2×
+        //
+
+        float referenceMagnitude =
+            referenceScale.magnitude;
+
+        float currentMagnitude =
+            planet.localScale.magnitude;
+
+        if (referenceMagnitude <= 0.00001f)
+            return;
+
+        float relativeScale =
+            currentMagnitude /
+            referenceMagnitude;
+
+        // =====================================================
         // POSITION
-        // =========================================================
-        //
-        // The panel follows the planet's WORLD POSITION.
-        //
-        // It does NOT use the camera's right/up vectors.
-        // Therefore moving your head does not move the panel.
-        // =========================================================
+        // =====================================================
 
-        Vector3 worldOffset = new Vector3(
-            horizontalOffset,
-            verticalOffset,
-            depthOffset
-        );
+        float positionMultiplier =
+            scalePositionWithPlanet
+                ? relativeScale
+                : 1f;
 
-        Vector3 targetPosition =
-            planet.position + worldOffset;
+        Vector3 offset =
+            fixedPanelDirection *
+            defaultHorizontalOffset *
+            positionMultiplier;
 
-        infoCanvasTransform.position = targetPosition;
+        offset +=
+            Vector3.up *
+            defaultVerticalOffset *
+            positionMultiplier;
 
+        offset +=
+            Vector3.forward *
+            defaultDepthOffset *
+            positionMultiplier;
 
-        // =========================================================
-        // ROTATION
-        // =========================================================
-        //
-        // The panel does NOT inherit planet rotation.
-        //
-        // It simply faces the user from its world position.
-        // =========================================================
+        infoCanvasTransform.position =
+            planet.position + offset;
 
-        // Scale UI according to planet size
-        float planetScale = planet.lossyScale.x;
+        // =====================================================
+        // PANEL SCALE
+        // =====================================================
 
-        float scaleFactor =
-            (planetScale / referencePlanetScale) * panelScaleMultiplier;
-
-        scaleFactor = Mathf.Clamp(
-            scaleFactor,
-            minimumPanelScale,
-            maximumPanelScale
-        );
+        float panelScale =
+            scalePanelWithPlanet
+                ? defaultPanelScale * relativeScale
+                : defaultPanelScale;
 
         infoCanvasTransform.localScale =
-            Vector3.one * scaleFactor;
+            originalPanelScale * panelScale;
+
+        // =====================================================
+        // FACE USER
+        // =====================================================
 
         if (alwaysFaceUser)
         {
@@ -224,7 +382,11 @@ public class PlanetInfoManager : MonoBehaviour
                 if (flipPanel)
                 {
                     targetRotation *=
-                        Quaternion.Euler(0f, 180f, 0f);
+                        Quaternion.Euler(
+                            0f,
+                            180f,
+                            0f
+                        );
                 }
 
                 infoCanvasTransform.rotation =
@@ -233,82 +395,16 @@ public class PlanetInfoManager : MonoBehaviour
         }
     }
 
-    private void UpdatePanelScale()
+    public void HidePlanetInfoFor(PlanetInfoData planet)
     {
-        if (selectedPlanet == null || infoCanvasTransform == null)
+        if (planet == null)
             return;
 
-        Transform planet = selectedPlanet.transform;
-
-        // ---------------------------------------------------------
-        // Calculate how much the planet has changed relative to
-        // the scale it had when the information panel appeared.
-        // ---------------------------------------------------------
-
-        float currentScale =
-            planet.localScale.magnitude;
-
-        float initialScale =
-            selectedPlanetInitialScale.magnitude;
-
-        if (initialScale <= 0.0001f)
+        // Only hide the panel if the planet being returned
+        // is currently the planet whose information is displayed.
+        if (selectedPlanet != planet)
             return;
 
-        float relativeScale =
-            currentScale / initialScale;
-
-        // ---------------------------------------------------------
-        // Convert planet scale into panel scale.
-        //
-        // 1.0x planet = normal panel size
-        // 2.0x planet = maximum panel size
-        // ---------------------------------------------------------
-
-        float panelScale;
-
-        if (relativeScale <= 1f)
-        {
-            // Planet is at its original size or smaller.
-            panelScale = Mathf.Lerp(
-                minimumPanelScale,
-                normalPanelScale,
-                relativeScale
-            );
-        }
-        else
-        {
-            // Planet is larger than its original size.
-            float t = Mathf.InverseLerp(
-                1f,
-                maximumPlanetScaleMultiplier,
-                relativeScale
-            );
-
-            panelScale = Mathf.Lerp(
-                normalPanelScale,
-                maximumPanelScale,
-                t
-            );
-        }
-
-        // ---------------------------------------------------------
-        // Absolute safety clamp.
-        // ---------------------------------------------------------
-
-        panelScale = Mathf.Clamp(
-            panelScale,
-            minimumPanelScale,
-            maximumPanelScale
-        );
-
-        // ---------------------------------------------------------
-        // Apply relative to the original Canvas scale.
-        //
-        // This prevents the panel from inheriting the planet's
-        // actual scale.
-        // ---------------------------------------------------------
-
-        infoCanvasTransform.localScale =
-            originalPanelScale * panelScale;
+        HidePlanetInfo();
     }
 }
