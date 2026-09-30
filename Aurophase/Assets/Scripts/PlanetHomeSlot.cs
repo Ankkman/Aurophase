@@ -147,6 +147,9 @@ public class PlanetHomeSlot : MonoBehaviour
         // Free the current slot immediately.
         DetachFromCurrentSlot();
 
+        if (AurophaseAudioManager.Instance != null)
+        AurophaseAudioManager.Instance.PlayGrab();
+
         // Show planet information.
         if (infoSelector != null)
         {
@@ -163,6 +166,9 @@ public class PlanetHomeSlot : MonoBehaviour
     {
         if (isSlotObject)
             return;
+
+        if (AurophaseAudioManager.Instance != null)
+        AurophaseAudioManager.Instance.PlayDrop();
 
         if (PlanetSlotManager.Instance == null)
         {
