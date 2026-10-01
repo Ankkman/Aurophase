@@ -48,21 +48,29 @@ public class BlackHoleInfoController : MonoBehaviour
     }
 
     // =====================================================
-    // GRABBED
+    // BLACK HOLE GRAB
     // =====================================================
 
     public void OnGrab()
     {
         ShowInfo();
+
+        if (AurophaseAudioManager.Instance != null)
+        {
+            AurophaseAudioManager.Instance.PlayGrab();
+        }
     }
 
     // =====================================================
-    // RELEASED
+    // BLACK HOLE RELEASE
     // =====================================================
 
     public void OnRelease()
     {
-        HideInfo();
+        if (AurophaseAudioManager.Instance != null)
+        {
+            AurophaseAudioManager.Instance.PlayDrop();
+        }
     }
 
     // =====================================================
@@ -144,7 +152,8 @@ public class BlackHoleInfoController : MonoBehaviour
 
         if (flipPanel)
         {
-            targetRotation *= Quaternion.Euler(0f, 180f, 0f);
+            targetRotation *=
+                Quaternion.Euler(0f, 180f, 0f);
         }
 
         infoCanvasTransform.rotation = targetRotation;

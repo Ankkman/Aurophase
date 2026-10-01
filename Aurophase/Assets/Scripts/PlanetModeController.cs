@@ -5,6 +5,9 @@ public class PlanetModeController : MonoBehaviour
     [Header("Planet Mode")]
     [SerializeField] private GameObject planetMode;
 
+    [Header("Other Modes")]
+    [SerializeField] private BlackHoleInfoController blackHoleInfoController;
+
     private void Awake()
     {
         if (planetMode == null)
@@ -21,6 +24,12 @@ public class PlanetModeController : MonoBehaviour
     public void ShowPlanets()
     {
         Debug.Log("PLANETS BUTTON PRESSED");
+
+        // Hide Black Hole information panel
+        if (blackHoleInfoController != null)
+        {
+            blackHoleInfoController.HideInfo();
+        }
 
         if (planetMode == null)
         {

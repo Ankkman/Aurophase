@@ -1176,6 +1176,7 @@ MonoBehaviour:
   solarSystemMode: {fileID: 554383258}
   planetMode: {fileID: 519370756}
   blackHoleMode: {fileID: 1633917648}
+  blackHoleInfoController: {fileID: 5878516208924719793}
 --- !u!4 &184192110
 Transform:
   m_ObjectHideFlags: 0
@@ -3843,7 +3844,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &554383259
 Transform:
   m_ObjectHideFlags: 0
@@ -9777,8 +9778,13 @@ MonoBehaviour:
   uiAudioSource: {fileID: 1286241343}
   interactionAudioSource: {fileID: 1863128083}
   buttonClick: {fileID: 8300000, guid: b8ef9ce07291680419af9da8e62b2a25, type: 3}
-  grabSound: {fileID: 8300000, guid: 855a41f8d59eec147a0f57315628626e, type: 3}
-  dropSound: {fileID: 8300000, guid: 7a61633febc642647877e1c972933b9e, type: 3}
+  grabSound: {fileID: 8300000, guid: 46b3ec8ae0a3e2b4c9926c81026d262d, type: 3}
+  dropSound: {fileID: 8300000, guid: 0b80b34137f1b6e42821a50b67d2484b, type: 3}
+  planetSlotGrabSound: {fileID: 8300000, guid: 855a41f8d59eec147a0f57315628626e, type: 3}
+  planetSlotDropSound: {fileID: 8300000, guid: 7a61633febc642647877e1c972933b9e, type: 3}
+  planetScaleSound: {fileID: 0}
+  scaleUpPitch: 1.08
+  scaleDownPitch: 0.92
 --- !u!4 &1334673710
 Transform:
   m_ObjectHideFlags: 0
@@ -15974,6 +15980,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlanetModeController
   planetMode: {fileID: 519370756}
+  blackHoleInfoController: {fileID: 0}
 --- !u!4 &2124745540
 Transform:
   m_ObjectHideFlags: 0
@@ -16015,12 +16022,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5362742267236333885}
-  - component: {fileID: 2258637769551093749}
   - component: {fileID: 5362742267236333886}
   - component: {fileID: 5362742267236333888}
   - component: {fileID: 5362742267236333889}
   - component: {fileID: 5362742267236333887}
   - component: {fileID: 5362742267236333890}
+  - component: {fileID: 5362742267236333891}
   m_Layer: 0
   m_Name: SolarSystemModel
   m_TagString: Untagged
@@ -16053,6 +16060,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 654854372969022297}
+  - component: {fileID: 654854372969022298}
   m_Layer: 0
   m_Name: erath_BezierCircle_11
   m_TagString: Untagged
@@ -16070,6 +16078,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4090140818373927540}
   - component: {fileID: 4090140818373927541}
+  - component: {fileID: 4090140818373927542}
   m_Layer: 0
   m_Name: saturn_19
   m_TagString: Untagged
@@ -16470,6 +16479,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 621967908682237926}
+  - component: {fileID: 621967908682237927}
   m_Layer: 0
   m_Name: mars_BezierCircle_14
   m_TagString: Untagged
@@ -16493,6 +16503,20 @@ Transform:
   - {fileID: 7132230299665792}
   m_Father: {fileID: 2717239741123147736}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &621967908682237927
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 611149377133329488}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 758e104accae67d448bac89f5fb1f443, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AutoRotate
+  rotationSpeed: {x: 0, y: 8, z: 0}
+  speedMultiplier: 1
 --- !u!23 &624696950247493084
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -16552,12 +16576,26 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0.20364153, y: -0, z: -0, w: 0.9790455}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 16.114597, y: 16.114597, z: 16.114597}
+  m_LocalScale: {x: 16.114595, y: 16.1146, z: 16.114597}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 9088837488276603063}
   m_Father: {fileID: 2717239741123147736}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &654854372969022298
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 167027804902023810}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 758e104accae67d448bac89f5fb1f443, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AutoRotate
+  rotationSpeed: {x: 0, y: 10, z: 0}
+  speedMultiplier: 1
 --- !u!1 &755626559300233940
 GameObject:
   m_ObjectHideFlags: 0
@@ -16965,6 +17003,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4024841736821811203}
   - component: {fileID: 4024841736821811204}
+  - component: {fileID: 4024841736821811205}
   m_Layer: 0
   m_Name: mercury_2
   m_TagString: Untagged
@@ -17269,6 +17308,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6085824836283362047}
+  - component: {fileID: 6085824836283362048}
   m_Layer: 0
   m_Name: moon_BezierCircle_33
   m_TagString: Untagged
@@ -17521,23 +17561,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!111 &2258637769551093749
-Animation:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 121441962896177802}
-  m_Enabled: 0
-  serializedVersion: 4
-  m_Animation: {fileID: 0}
-  m_Animations:
-  - {fileID: 0}
-  m_WrapMode: 0
-  m_PlayAutomatically: 1
-  m_AnimatePhysics: 0
-  m_UpdateMode: 0
-  m_CullingType: 0
 --- !u!1 &2262873914189799787
 GameObject:
   m_ObjectHideFlags: 0
@@ -17548,6 +17571,7 @@ GameObject:
   m_Component:
   - component: {fileID: 218799056426737893}
   - component: {fileID: 2262873914189799788}
+  - component: {fileID: 2262873914189799789}
   m_Layer: 0
   m_Name: uranus_22
   m_TagString: Untagged
@@ -17573,6 +17597,20 @@ MonoBehaviour:
   showDistance: 1
   hideDistance: 1.5
   faceUser: 1
+--- !u!114 &2262873914189799789
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2262873914189799787}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 758e104accae67d448bac89f5fb1f443, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AutoRotate
+  rotationSpeed: {x: 0, y: -25, z: 0}
+  speedMultiplier: 1
 --- !u!4 &2282499602555839224
 Transform:
   m_ObjectHideFlags: 0
@@ -17639,6 +17677,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5169180494767143064}
+  - component: {fileID: 5169180494767143065}
   m_Layer: 0
   m_Name: saturn_BezierCircle_21
   m_TagString: Untagged
@@ -17656,6 +17695,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7613247127824158073}
   - component: {fileID: 7613247127824158074}
+  - component: {fileID: 7613247127824158075}
   m_Layer: 0
   m_Name: jupiter_15
   m_TagString: Untagged
@@ -17855,27 +17895,27 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 592229546379037921}
-  - {fileID: 654854372969022297}
-  - {fileID: 6717635617881646539}
-  - {fileID: 7807883772459706316}
-  - {fileID: 9144630704175202868}
-  - {fileID: 621967908682237926}
+  - {fileID: 521221478440503676}
   - {fileID: 5613198759350662447}
   - {fileID: 5274364337705258912}
+  - {fileID: 440451743770874052}
+  - {fileID: 1396852989048285260}
+  - {fileID: 592229546379037921}
+  - {fileID: 654854372969022297}
   - {fileID: 8845070140350356032}
   - {fileID: 6085824836283362047}
+  - {fileID: 9144630704175202868}
+  - {fileID: 621967908682237926}
+  - {fileID: 6717635617881646539}
+  - {fileID: 7807883772459706316}
+  - {fileID: 152666677025168159}
+  - {fileID: 5169180494767143064}
+  - {fileID: 949750715732106286}
+  - {fileID: 4764902657998949177}
   - {fileID: 7549945696151384645}
   - {fileID: 4347198364171648589}
   - {fileID: 7465638960896471009}
   - {fileID: 5895207960792827531}
-  - {fileID: 152666677025168159}
-  - {fileID: 5169180494767143064}
-  - {fileID: 521221478440503676}
-  - {fileID: 949750715732106286}
-  - {fileID: 4764902657998949177}
-  - {fileID: 440451743770874052}
-  - {fileID: 1396852989048285260}
   m_Father: {fileID: 5474363351864399060}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &2719888403306322640
@@ -18899,6 +18939,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3250819843939919840}
   - component: {fileID: 3709534619461788765}
+  - component: {fileID: 3709534619461788766}
   m_Layer: 0
   m_Name: venus_5
   m_TagString: Untagged
@@ -18924,6 +18965,20 @@ MonoBehaviour:
   showDistance: 1
   hideDistance: 1.5
   faceUser: 1
+--- !u!114 &3709534619461788766
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3709534619461788764}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 758e104accae67d448bac89f5fb1f443, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AutoRotate
+  rotationSpeed: {x: 0, y: -5, z: 0}
+  speedMultiplier: 1
 --- !u!1 &3734954936822404676
 GameObject:
   m_ObjectHideFlags: 0
@@ -19458,6 +19513,20 @@ MonoBehaviour:
   showDistance: 1
   hideDistance: 1.5
   faceUser: 1
+--- !u!114 &4024841736821811205
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1429467574126703474}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 758e104accae67d448bac89f5fb1f443, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AutoRotate
+  rotationSpeed: {x: 0, y: 8, z: 0}
+  speedMultiplier: 1
 --- !u!1 &4034716418414672754
 GameObject:
   m_ObjectHideFlags: 0
@@ -19561,6 +19630,20 @@ MonoBehaviour:
   showDistance: 1
   hideDistance: 1.5
   faceUser: 1
+--- !u!114 &4090140818373927542
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 193100143353743178}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 758e104accae67d448bac89f5fb1f443, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AutoRotate
+  rotationSpeed: {x: 0, y: 30, z: 0}
+  speedMultiplier: 1
 --- !u!4 &4132029559553045225
 Transform:
   m_ObjectHideFlags: 0
@@ -19638,6 +19721,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4347198364171648589}
+  - component: {fileID: 4347198364171648590}
   m_Layer: 0
   m_Name: neptune_BezierCircle_27
   m_TagString: Untagged
@@ -19679,6 +19763,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5274364337705258912}
+  - component: {fileID: 5274364337705258913}
   m_Layer: 0
   m_Name: mercury_BezierCircle_4
   m_TagString: Untagged
@@ -19759,6 +19844,20 @@ Transform:
   - {fileID: 443207738590496419}
   m_Father: {fileID: 2717239741123147736}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4347198364171648590
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4191900018384864613}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 758e104accae67d448bac89f5fb1f443, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AutoRotate
+  rotationSpeed: {x: 0, y: 1.5, z: 0}
+  speedMultiplier: 1
 --- !u!4 &4364425961252373644
 Transform:
   m_ObjectHideFlags: 0
@@ -20244,6 +20343,7 @@ GameObject:
   - component: {fileID: 5376246011091658100}
   - component: {fileID: 7966276795565696286}
   - component: {fileID: 5731975435219744162}
+  - component: {fileID: 7966276795565696287}
   m_Layer: 0
   m_Name: Object_11
   m_TagString: Untagged
@@ -20926,6 +21026,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1396852989048285260}
+  - component: {fileID: 5073436718885375297}
   m_Layer: 0
   m_Name: venus_BezierCircle_7
   m_TagString: Untagged
@@ -20933,6 +21034,20 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &5073436718885375297
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5073436718885375296}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 758e104accae67d448bac89f5fb1f443, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AutoRotate
+  rotationSpeed: {x: 0, y: 14, z: 0}
+  speedMultiplier: 1
 --- !u!4 &5099007290691494526
 Transform:
   m_ObjectHideFlags: 0
@@ -20965,6 +21080,20 @@ Transform:
   - {fileID: 4090140818373927540}
   m_Father: {fileID: 2717239741123147736}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5169180494767143065
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2371754211234645006}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 758e104accae67d448bac89f5fb1f443, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AutoRotate
+  rotationSpeed: {x: 0, y: 3.5, z: 0}
+  speedMultiplier: 1
 --- !u!1 &5213599511158936821
 GameObject:
   m_ObjectHideFlags: 0
@@ -21052,6 +21181,20 @@ Transform:
   - {fileID: 4024841736821811203}
   m_Father: {fileID: 2717239741123147736}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5274364337705258913
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4233551091627778437}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 758e104accae67d448bac89f5fb1f443, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AutoRotate
+  rotationSpeed: {x: 0, y: 18, z: 0}
+  speedMultiplier: 1
 --- !u!1 &5287668388776292442
 GameObject:
   m_ObjectHideFlags: 0
@@ -21283,6 +21426,64 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   OnSpinTick:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &5362742267236333891
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 121441962896177802}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e2f8f6e9e6f3e114b9bf9a57c2160615, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Oculus.Interaction::Oculus.Interaction.PointableUnityEventWrapper
+  _pointable: {fileID: 5362742267236333888}
+  _whenRelease:
+    m_PersistentCalls:
+      m_Calls: []
+  _whenHover:
+    m_PersistentCalls:
+      m_Calls: []
+  _whenUnhover:
+    m_PersistentCalls:
+      m_Calls: []
+  _whenSelect:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1334673709}
+        m_TargetAssemblyTypeName: AurophaseAudioManager, Assembly-CSharp
+        m_MethodName: PlayGrab
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  _whenUnselect:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1334673709}
+        m_TargetAssemblyTypeName: AurophaseAudioManager, Assembly-CSharp
+        m_MethodName: PlayDrop
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  _whenMove:
+    m_PersistentCalls:
+      m_Calls: []
+  _whenCancel:
     m_PersistentCalls:
       m_Calls: []
 --- !u!1 &5364829529244329335
@@ -22344,6 +22545,20 @@ Transform:
   - {fileID: 3432478834752692130}
   m_Father: {fileID: 2717239741123147736}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6085824836283362048
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1861446653502920677}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 758e104accae67d448bac89f5fb1f443, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AutoRotate
+  rotationSpeed: {x: 0, y: 35, z: 0}
+  speedMultiplier: 1
 --- !u!1 &6088647213443709473
 GameObject:
   m_ObjectHideFlags: 0
@@ -22407,6 +22622,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3502886258075836522}
+  - component: {fileID: 6162275542129410212}
   m_Layer: 0
   m_Name: GLTF_SceneRootNode
   m_TagString: Untagged
@@ -22414,6 +22630,20 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &6162275542129410212
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6162275542129410211}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 758e104accae67d448bac89f5fb1f443, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AutoRotate
+  rotationSpeed: {x: 0, y: 15, z: 0}
+  speedMultiplier: 1
 --- !u!4 &6205879581896218797
 Transform:
   m_ObjectHideFlags: 0
@@ -22471,6 +22701,7 @@ GameObject:
   m_Component:
   - component: {fileID: 443207738590496419}
   - component: {fileID: 6276635007001885449}
+  - component: {fileID: 6276635007001885450}
   m_Layer: 0
   m_Name: neptune_25
   m_TagString: Untagged
@@ -22496,6 +22727,20 @@ MonoBehaviour:
   showDistance: 1
   hideDistance: 1.5
   faceUser: 1
+--- !u!114 &6276635007001885450
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6276635007001885448}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 758e104accae67d448bac89f5fb1f443, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AutoRotate
+  rotationSpeed: {x: 0, y: 30, z: 0}
+  speedMultiplier: 1
 --- !u!4 &6314047462289003104
 Transform:
   m_ObjectHideFlags: 0
@@ -22732,6 +22977,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5895207960792827531}
+  - component: {fileID: 6848371942435352493}
   m_Layer: 0
   m_Name: pluto_BezierCircle_30
   m_TagString: Untagged
@@ -22739,6 +22985,20 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &6848371942435352493
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6848371942435352492}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 758e104accae67d448bac89f5fb1f443, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AutoRotate
+  rotationSpeed: {x: 0, y: 1, z: 0}
+  speedMultiplier: 1
 --- !u!1 &6864575684807216282
 GameObject:
   m_ObjectHideFlags: 0
@@ -23456,6 +23716,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7132230299665792}
   - component: {fileID: 7094148975776410274}
+  - component: {fileID: 7094148975776410275}
   m_Layer: 0
   m_Name: mars_12
   m_TagString: Untagged
@@ -23481,6 +23742,20 @@ MonoBehaviour:
   showDistance: 1
   hideDistance: 1.5
   faceUser: 1
+--- !u!114 &7094148975776410275
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7094148975776410273}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 758e104accae67d448bac89f5fb1f443, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AutoRotate
+  rotationSpeed: {x: 0, y: 20, z: 0}
+  speedMultiplier: 1
 --- !u!1 &7197117214852296994
 GameObject:
   m_ObjectHideFlags: 0
@@ -23776,6 +24051,20 @@ MonoBehaviour:
   showDistance: 1
   hideDistance: 1.5
   faceUser: 1
+--- !u!114 &7613247127824158075
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2397491741930119539}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 758e104accae67d448bac89f5fb1f443, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AutoRotate
+  rotationSpeed: {x: 0, y: 45, z: 0}
+  speedMultiplier: 1
 --- !u!33 &7637957725313590544
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -23930,6 +24219,20 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4617712819979142568}
   m_Mesh: {fileID: 4300000, guid: e5ffe53572672b240bd774929787eb08, type: 2}
+--- !u!114 &7966276795565696287
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4617712819979142568}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 758e104accae67d448bac89f5fb1f443, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AutoRotate
+  rotationSpeed: {x: 0, y: 22, z: 0}
+  speedMultiplier: 1
 --- !u!33 &7974528799907916328
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -24337,6 +24640,7 @@ GameObject:
   m_Component:
   - component: {fileID: 521221478440503676}
   - component: {fileID: 8329954762642394897}
+  - component: {fileID: 8329954762642394898}
   m_Layer: 0
   m_Name: sun_53
   m_TagString: Untagged
@@ -24362,6 +24666,20 @@ MonoBehaviour:
   showDistance: 1
   hideDistance: 1.5
   faceUser: 1
+--- !u!114 &8329954762642394898
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8329954762642394896}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 758e104accae67d448bac89f5fb1f443, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AutoRotate
+  rotationSpeed: {x: 0, y: 1, z: 0}
+  speedMultiplier: 1
 --- !u!4 &8390358224748955489
 Transform:
   m_ObjectHideFlags: 0
@@ -24503,6 +24821,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7807883772459706316}
+  - component: {fileID: 8509232554638163182}
   m_Layer: 0
   m_Name: jupiter_BezierCircle_17
   m_TagString: Untagged
@@ -24510,6 +24829,20 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &8509232554638163182
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8509232554638163181}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 758e104accae67d448bac89f5fb1f443, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AutoRotate
+  rotationSpeed: {x: 0, y: 5, z: 0}
+  speedMultiplier: 1
 --- !u!23 &8517857030412811044
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -25263,6 +25596,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4764902657998949177}
+  - component: {fileID: 9129900533506705231}
   m_Layer: 0
   m_Name: uranus_BezierCircle_24
   m_TagString: Untagged
@@ -25270,6 +25604,20 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &9129900533506705231
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9129900533506705230}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 758e104accae67d448bac89f5fb1f443, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AutoRotate
+  rotationSpeed: {x: 0, y: 2.5, z: 0}
+  speedMultiplier: 1
 --- !u!4 &9131294702048971552
 Transform:
   m_ObjectHideFlags: 0
@@ -25471,8 +25819,8 @@ SceneRoots:
   - {fileID: 2101836477}
   - {fileID: 519370757}
   - {fileID: 716395557}
-  - {fileID: 554383259}
   - {fileID: 1633917649}
   - {fileID: 392713393}
   - {fileID: 184192110}
   - {fileID: 552048768}
+  - {fileID: 554383259}

@@ -15,9 +15,22 @@ public class AurophaseAudioManager : MonoBehaviour
     [Header("UI Sounds")]
     [SerializeField] private AudioClip buttonClick;
 
-    [Header("Interaction Sounds")]
+    [Header("Normal Interaction Sounds")]
     [SerializeField] private AudioClip grabSound;
     [SerializeField] private AudioClip dropSound;
+
+    [Header("Planet Slot Sounds")]
+    [SerializeField] private AudioClip planetSlotGrabSound;
+    [SerializeField] private AudioClip planetSlotDropSound;
+
+    [Header("Planet Scaling")]
+    [SerializeField] private AudioClip planetScaleSound;
+
+    [Tooltip("Pitch when planet is scaling UP.")]
+    [SerializeField] private float scaleUpPitch = 1.08f;
+
+    [Tooltip("Pitch when planet is scaling DOWN.")]
+    [SerializeField] private float scaleDownPitch = 0.92f;
 
     private void Awake()
     {
@@ -89,7 +102,7 @@ public class AurophaseAudioManager : MonoBehaviour
     }
 
     // =====================================================
-    // GRAB
+    // NORMAL GRAB
     // =====================================================
 
     public void PlayGrab()
@@ -102,7 +115,7 @@ public class AurophaseAudioManager : MonoBehaviour
     }
 
     // =====================================================
-    // DROP
+    // NORMAL DROP
     // =====================================================
 
     public void PlayDrop()
@@ -112,5 +125,57 @@ public class AurophaseAudioManager : MonoBehaviour
             return;
 
         interactionAudioSource.PlayOneShot(dropSound);
+    }
+
+    // =====================================================
+    // PLANET TAKEN FROM SLOT
+    // =====================================================
+
+    public void PlayPlanetSlotGrab()
+    {
+        if (interactionAudioSource == null ||
+            planetSlotGrabSound == null)
+            return;
+
+        interactionAudioSource.PlayOneShot(
+            planetSlotGrabSound
+        );
+    }
+
+    // =====================================================
+    // PLANET RETURNED TO SLOT
+    // =====================================================
+
+    public void PlayPlanetSlotDrop()
+    {
+        if (interactionAudioSource == null ||
+            planetSlotDropSound == null)
+            return;
+
+        interactionAudioSource.PlayOneShot(
+            planetSlotDropSound
+        );
+    }
+
+    // =====================================================
+    // PLANET SCALE
+    // =====================================================
+
+    public void PlayPlanetScale(bool scalingUp)
+    {
+        if (interactionAudioSource == null ||
+            planetScaleSound == null)
+            return;
+
+        float oldPitch = interactionAudioSource.pitch;
+
+        interactionAudioSource.pitch =
+            scalingUp ? scaleUpPitch : scaleDownPitch;
+
+        interactionAudioSource.PlayOneShot(
+            planetScaleSound
+        );
+
+        interactionAudioSource.pitch = oldPitch;
     }
 }

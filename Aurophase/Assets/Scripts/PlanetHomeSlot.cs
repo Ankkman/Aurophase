@@ -143,14 +143,37 @@ public class PlanetHomeSlot : MonoBehaviour
         if (isSlotObject)
             return;
 
-        // CRITICAL:
-        // Free the current slot immediately.
+        // Was this planet actually sitting inside a slot?
+        bool wasInSlot = currentSlot != null;
+
+        // Free the slot immediately.
         DetachFromCurrentSlot();
 
-        if (AurophaseAudioManager.Instance != null)
-        AurophaseAudioManager.Instance.PlayGrab();
+        // -----------------------------------------------------
+        // SOUND
+        // -----------------------------------------------------
 
-        // Show planet information.
+        if (AurophaseAudioManager.Instance != null)
+        {
+            if (wasInSlot)
+            {
+                // Special sound:
+                // Planet taken out of its home/rack slot.
+                AurophaseAudioManager.Instance
+                    .PlayPlanetSlotGrab();
+            }
+            else
+            {
+                // Normal free-space grab.
+                AurophaseAudioManager.Instance
+                    .PlayGrab();
+            }
+        }
+
+        // -----------------------------------------------------
+        // INFO PANEL
+        // -----------------------------------------------------
+
         if (infoSelector != null)
         {
             infoSelector.SelectPlanet();
@@ -167,22 +190,37 @@ public class PlanetHomeSlot : MonoBehaviour
         if (isSlotObject)
             return;
 
-        if (AurophaseAudioManager.Instance != null)
-        AurophaseAudioManager.Instance.PlayDrop();
-
         if (PlanetSlotManager.Instance == null)
         {
-            Debug.LogWarning(
-                "PlanetSlotManager not found."
-            );
-
+            Debug.LogWarning("PlanetSlotManager not found.");
             return;
         }
 
-        PlanetSlotManager.Instance
-            .TryPlacePlanet(this);
-    }
+        // Try to place the planet into a slot.
+        PlanetSlotManager.Instance.TryPlacePlanet(this);
 
+        // -----------------------------------------------------
+        // CHECK ACTUAL RESULT
+        // -----------------------------------------------------
+
+        bool isNowInSlot = CurrentSlot != null;
+
+        if (AurophaseAudioManager.Instance != null)
+        {
+            if (isNowInSlot)
+            {
+                // Successfully placed into a slot.
+                AurophaseAudioManager.Instance
+                    .PlayPlanetSlotDrop();
+            }
+            else
+            {
+                // Released somewhere in free space.
+                AurophaseAudioManager.Instance
+                    .PlayDrop();
+            }
+        }
+    }
 
     // =========================================================
     // DETACH FROM SLOT

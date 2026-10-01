@@ -7,6 +7,10 @@ public class SpaceModeController : MonoBehaviour
     [SerializeField] private GameObject planetMode;
     [SerializeField] private GameObject blackHoleMode;
 
+    [Header("Black Hole UI")]
+    [SerializeField] private BlackHoleInfoController blackHoleInfoController;
+
+
     public void ShowSolarSystem()
     {
         DisableAllModes();
@@ -16,6 +20,7 @@ public class SpaceModeController : MonoBehaviour
 
         Debug.Log("SOLAR SYSTEM MODE ACTIVATED");
     }
+
 
     public void ShowPlanets()
     {
@@ -27,6 +32,7 @@ public class SpaceModeController : MonoBehaviour
         Debug.Log("PLANET MODE ACTIVATED");
     }
 
+
     public void ShowBlackHole()
     {
         DisableAllModes();
@@ -36,6 +42,7 @@ public class SpaceModeController : MonoBehaviour
 
         Debug.Log("BLACK HOLE MODE ACTIVATED");
     }
+
 
     private void DisableAllModes()
     {
@@ -47,5 +54,9 @@ public class SpaceModeController : MonoBehaviour
 
         if (blackHoleMode != null)
             blackHoleMode.SetActive(false);
+
+        // Hide independent Black Hole information panel
+        if (blackHoleInfoController != null)
+            blackHoleInfoController.HideInfo();
     }
 }
