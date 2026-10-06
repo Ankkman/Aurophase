@@ -58,8 +58,12 @@ public class AurophaseIntro : MonoBehaviour
         if (mainMenu != null)
             mainMenu.SetActive(true);
 
-        if (starEffect != null)
-            starEffect.SetActive(false);
+        // Restore the normal Aurophase environment.
+        // Dimmed passthrough + starfield.
+        if (AurophasePassthroughManager.Instance != null)
+        {
+            AurophasePassthroughManager.Instance.SetNormalModeImmediate();
+        }
 
         gameObject.SetActive(false);
     }

@@ -86,6 +86,9 @@ public class PlanetInfoFollower : MonoBehaviour
         if (vrCamera == null)
             vrCamera = Camera.main;
 
+        // Make the info canvas visible again.
+        gameObject.SetActive(true);
+
         // Snap immediately instead of waiting for smoothing
         if (targetPlanet != null)
         {
@@ -98,6 +101,8 @@ public class PlanetInfoFollower : MonoBehaviour
     {
         following = false;
         targetPlanet = null;
+
+        gameObject.SetActive(false);
     }
 
     public Transform GetTargetPlanet()

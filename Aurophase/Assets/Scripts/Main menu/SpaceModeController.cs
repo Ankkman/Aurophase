@@ -317,6 +317,10 @@ public class SpaceModeController : MonoBehaviour
 
     private void DisableAllModes()
     {
+        // Close any planet information canvas
+        // before switching to another mode.
+        HideAllPlanetInfoPanels();
+
         if (solarSystemMode != null)
         {
             solarSystemMode.SetActive(false);
@@ -335,6 +339,22 @@ public class SpaceModeController : MonoBehaviour
         if (blackHoleInfoController != null)
         {
             blackHoleInfoController.HideInfo();
+        }
+    }
+
+    private void HideAllPlanetInfoPanels()
+    {
+        PlanetInfoFollower[] followers =
+            FindObjectsByType<PlanetInfoFollower>(
+                FindObjectsSortMode.None
+            );
+
+        foreach (PlanetInfoFollower follower in followers)
+        {
+            if (follower != null)
+            {
+                follower.Hide();
+            }
         }
     }
 }
