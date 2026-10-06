@@ -1176,6 +1176,8 @@ MonoBehaviour:
   solarSystemMode: {fileID: 554383258}
   planetMode: {fileID: 519370756}
   blackHoleMode: {fileID: 1633917648}
+  solarSystemReset: {fileID: 5362742267236333893}
+  blackHoleReset: {fileID: 5878516208924719795}
   blackHoleInfoController: {fileID: 5878516208924719793}
   passthroughManager: {fileID: 1016482754}
 --- !u!4 &184192110
@@ -6992,7 +6994,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AurophasePassthroughManager
   passthroughLayer: {fileID: 2128795998}
-  normalOpacity: 0.35
+  normalOpacity: 0.3
   surroundingStarsVFX: {fileID: 1742510696}
   transitionDuration: 0.6
   blackHoleOpacity: 0
@@ -18751,7 +18753,7 @@ MonoBehaviour:
   line2: {fileID: 1000062968}
   title: {fileID: 1394309924}
   mainMenu: {fileID: 2101836473}
-  starEffect: {fileID: 0}
+  starEffect: {fileID: 1742510696}
   fadeInTime: 1.2
   displayTime: 2
   fadeOutTime: 0.8
@@ -21466,12 +21468,13 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5362742267236333885}
-  - component: {fileID: 5362742267236333886}
   - component: {fileID: 5362742267236333888}
   - component: {fileID: 5362742267236333889}
   - component: {fileID: 5362742267236333887}
   - component: {fileID: 5362742267236333890}
   - component: {fileID: 5362742267236333891}
+  - component: {fileID: 5362742267236333892}
+  - component: {fileID: 5362742267236333893}
   m_Layer: 0
   m_Name: SolarSystemModel
   m_TagString: Untagged
@@ -26706,27 +26709,6 @@ Transform:
   - {fileID: 1415294291}
   m_Father: {fileID: 554383259}
   m_LocalEulerAnglesHint: {x: 0, y: -90, z: 0}
---- !u!65 &5362742267236333886
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 121441962896177802}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 82, y: 58, z: 120.1}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!54 &5362742267236333887
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -26853,7 +26835,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlanetPalmRotation
   planet: {fileID: 5362742267236333885}
-  planetCollider: {fileID: 5362742267236333886}
+  planetCollider: {fileID: 0}
   surfaceInteractionDistance: 0.15
   rotationSensitivity: 1
   minimumVirtualRadius: 0.15
@@ -26930,6 +26912,40 @@ MonoBehaviour:
   _whenCancel:
     m_PersistentCalls:
       m_Calls: []
+--- !u!135 &5362742267236333892
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 121441962896177802}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 40
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &5362742267236333893
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 121441962896177802}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab59161b7eb33ef45a7e14a7de417b1a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ResetModeTransform
+  target: {fileID: 5362742267236333885}
 --- !u!1 &5364829529244329335
 GameObject:
   m_ObjectHideFlags: 0
@@ -27515,6 +27531,7 @@ GameObject:
   - component: {fileID: 5878516208924719792}
   - component: {fileID: 5878516208924719793}
   - component: {fileID: 5878516208924719794}
+  - component: {fileID: 5878516208924719795}
   m_Layer: 0
   m_Name: Black Hole
   m_TagString: Untagged
@@ -27766,6 +27783,19 @@ MonoBehaviour:
   _whenCancel:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &5878516208924719795
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5878516208924719787}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab59161b7eb33ef45a7e14a7de417b1a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ResetModeTransform
+  target: {fileID: 938186628351458671}
 --- !u!1 &5885730832207211095
 GameObject:
   m_ObjectHideFlags: 0

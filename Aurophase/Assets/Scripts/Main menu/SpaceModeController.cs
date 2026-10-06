@@ -8,6 +8,10 @@ public class SpaceModeController : MonoBehaviour
     [SerializeField] private GameObject planetMode;
     [SerializeField] private GameObject blackHoleMode;
 
+    [Header("Mode Reset")]
+    [SerializeField] private ResetModeTransform solarSystemReset;
+    [SerializeField] private ResetModeTransform blackHoleReset;
+
     [Header("Black Hole UI")]
     [SerializeField] private BlackHoleInfoController blackHoleInfoController;
 
@@ -17,7 +21,7 @@ public class SpaceModeController : MonoBehaviour
     private Coroutine modeTransitionCoroutine;
 
     // =====================================================
-    // SOLAR SYSTEM
+    // PUBLIC BUTTON METHODS
     // =====================================================
 
     public void ShowSolarSystem()
@@ -25,18 +29,10 @@ public class SpaceModeController : MonoBehaviour
         StartModeTransition(Mode.SolarSystem);
     }
 
-    // =====================================================
-    // PLANETS
-    // =====================================================
-
     public void ShowPlanets()
     {
         StartModeTransition(Mode.Planets);
     }
-
-    // =====================================================
-    // BLACK HOLE
-    // =====================================================
 
     public void ShowBlackHole()
     {
@@ -55,7 +51,7 @@ public class SpaceModeController : MonoBehaviour
     }
 
     // =====================================================
-    // START MODE TRANSITION
+    // START TRANSITION
     // =====================================================
 
     private void StartModeTransition(Mode targetMode)
@@ -66,8 +62,9 @@ public class SpaceModeController : MonoBehaviour
             modeTransitionCoroutine = null;
         }
 
-        modeTransitionCoroutine =
-            StartCoroutine(ChangeMode(targetMode));
+        modeTransitionCoroutine = StartCoroutine(
+            ChangeMode(targetMode)
+        );
     }
 
     // =====================================================
@@ -83,56 +80,83 @@ public class SpaceModeController : MonoBehaviour
             blackHoleMode != null &&
             blackHoleMode.activeSelf;
 
+        Debug.Log(
+            "Changing mode to: " + targetMode
+        );
+
         // -------------------------------------------------
-        // HIDE CURRENT CONTENT FIRST
+        // HIDE EVERYTHING
         // -------------------------------------------------
 
         DisableAllModes();
 
-        // -------------------------------------------------
-        // ENTER BLACK HOLE
-        // -------------------------------------------------
+        // =================================================
+        // BLACK HOLE
+        // =================================================
 
         if (goingToBlackHole)
         {
-            Debug.Log("Preparing BLACK HOLE environment...");
+            Debug.Log("Preparing BLACK HOLE...");
 
+            // Reset while hidden.
+            if (blackHoleReset != null)
+            {
+                blackHoleReset.ResetToDefault();
+
+                Debug.Log(
+                    "Black Hole transform reset."
+                );
+            }
+
+            // Change environment.
             if (passthroughManager != null)
             {
                 passthroughManager.SetBlackHoleMode();
 
-                // Wait until environment becomes dark.
                 yield return new WaitUntil(
                     () => !passthroughManager.IsTransitioning
                 );
             }
 
-            // Now show Black Hole.
+            // Activate mode.
             if (blackHoleMode != null)
             {
                 blackHoleMode.SetActive(true);
             }
 
-            Debug.Log("BLACK HOLE MODE ACTIVATED.");
+            // Reset AGAIN after activation.
+            // This guarantees the model is placed correctly
+            // even if another component changed it.
+            if (blackHoleReset != null)
+            {
+                blackHoleReset.ResetToDefault();
+            }
+
+            Debug.Log(
+                "BLACK HOLE MODE ACTIVATED."
+            );
         }
 
-        // -------------------------------------------------
-        // RETURN FROM BLACK HOLE
-        // -------------------------------------------------
+        // =================================================
+        // NORMAL ENVIRONMENT
+        // =================================================
 
         else
         {
+            // -------------------------------------------------
+            // LEAVING BLACK HOLE
+            // -------------------------------------------------
+
             if (currentlyBlackHole)
             {
                 Debug.Log(
-                    "Leaving BLACK HOLE - restoring environment..."
+                    "Leaving BLACK HOLE..."
                 );
 
                 if (passthroughManager != null)
                 {
                     passthroughManager.SetNormalMode();
 
-                    // Wait until normal environment is restored.
                     yield return new WaitUntil(
                         () => !passthroughManager.IsTransitioning
                     );
@@ -147,21 +171,47 @@ public class SpaceModeController : MonoBehaviour
                 }
             }
 
-            // -------------------------------------------------
-            // SHOW TARGET NORMAL MODE
-            // -------------------------------------------------
+            // =================================================
+            // SOLAR SYSTEM
+            // =================================================
 
             if (targetMode == Mode.SolarSystem)
             {
+                Debug.Log(
+                    "Preparing SOLAR SYSTEM..."
+                );
+
+                // Reset before activation.
+                if (solarSystemReset != null)
+                {
+                    solarSystemReset.ResetToDefault();
+
+                    Debug.Log(
+                        "Solar System transform reset."
+                    );
+                }
+
+                // Activate.
                 if (solarSystemMode != null)
                 {
                     solarSystemMode.SetActive(true);
+                }
+
+                // Reset AGAIN after activation.
+                if (solarSystemReset != null)
+                {
+                    solarSystemReset.ResetToDefault();
                 }
 
                 Debug.Log(
                     "SOLAR SYSTEM MODE ACTIVATED."
                 );
             }
+
+            // =================================================
+            // PLANETS
+            // =================================================
+
             else if (targetMode == Mode.Planets)
             {
                 if (planetMode != null)
@@ -199,7 +249,6 @@ public class SpaceModeController : MonoBehaviour
             blackHoleMode.SetActive(false);
         }
 
-        // Always hide independent Black Hole information UI.
         if (blackHoleInfoController != null)
         {
             blackHoleInfoController.HideInfo();
