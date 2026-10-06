@@ -22,6 +22,10 @@ public class PlanetHomeSlot : MonoBehaviour
     private Quaternion defaultPlanetRotation;
 
 
+    [Header("Original Home")]
+    [SerializeField] private PlanetHomeSlot originalHomeSlot;
+
+
     // =========================================================
     // PROPERTIES
     // =========================================================
@@ -63,14 +67,7 @@ public class PlanetHomeSlot : MonoBehaviour
                 GetComponent<PlanetInfoSelector>();
         }
 
-        if (!isSlotObject)
-        {
-            defaultPlanetScale =
-                transform.localScale;
-
-            defaultPlanetRotation =
-                transform.rotation;
-        }
+        // Planet defaults are stored in Start().
     }
 
 
@@ -89,6 +86,54 @@ public class PlanetHomeSlot : MonoBehaviour
 
             UpdateSlotVisual();
         }
+
+        defaultPlanetScale = transform.localScale;
+        defaultPlanetRotation = transform.localRotation;
+    }
+
+
+    public void SetOriginalHomeSlot(PlanetHomeSlot slot)
+    {
+        originalHomeSlot = slot;
+    }
+
+    public void ResetToOriginalHome()
+    {
+        if (isSlotObject)
+            return;
+
+        if (originalHomeSlot == null)
+        {
+            Debug.LogWarning(
+                $"{name}: Original home slot has not been assigned."
+            );
+            return;
+        }
+
+        // Make sure the planet is removed from any current slot.
+        DetachFromCurrentSlot();
+
+        // Restore original transform.
+        transform.position = originalHomeSlot.transform.position;
+        transform.rotation = originalHomeSlot.transform.rotation;
+        transform.localScale = defaultPlanetScale;
+
+        // Assign back to original slot.
+        AssignToSlot(originalHomeSlot);
+
+        // Restore the planet's original rotation explicitly.
+        transform.rotation = originalHomeSlot.transform.rotation;
+
+        // Restore the planet's original scale.
+        transform.localScale = defaultPlanetScale;
+
+        // Hide the empty-slot indicator.
+        originalHomeSlot.UpdateSlotVisual();
+
+        Debug.Log(
+            $"{name}: Reset to original home slot " +
+            $"{originalHomeSlot.name}"
+        );
     }
 
 
@@ -226,7 +271,7 @@ public class PlanetHomeSlot : MonoBehaviour
     // DETACH FROM SLOT
     // =========================================================
 
-    private void DetachFromCurrentSlot()
+    public void DetachFromCurrentSlot()
     {
         if (currentSlot == null)
             return;

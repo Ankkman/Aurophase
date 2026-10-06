@@ -1181,6 +1181,7 @@ MonoBehaviour:
   planetModeResetter: {fileID: 519370758}
   blackHoleInfoController: {fileID: 5878516208924719793}
   passthroughManager: {fileID: 1016482754}
+  mainUI: {fileID: 2101836477}
 --- !u!4 &184192110
 Transform:
   m_ObjectHideFlags: 0
@@ -3625,8 +3626,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlanetModeResetter
   planetMode: {fileID: 519370757}
-  referenceTransform: {fileID: 2101836477}
-  followReferenceRotation: 1
 --- !u!1 &529818394
 GameObject:
   m_ObjectHideFlags: 0
@@ -26973,8 +26972,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ResetModeTransform
   target: {fileID: 5362742267236333885}
-  referenceTransform: {fileID: 2101836477}
-  followReferenceRotation: 1
 --- !u!1 &5364829529244329335
 GameObject:
   m_ObjectHideFlags: 0
@@ -27826,8 +27823,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ResetModeTransform
   target: {fileID: 938186628351458671}
-  referenceTransform: {fileID: 2101836477}
-  followReferenceRotation: 1
 --- !u!1 &5885730832207211095
 GameObject:
   m_ObjectHideFlags: 0

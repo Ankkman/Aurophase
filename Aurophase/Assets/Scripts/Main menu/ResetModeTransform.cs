@@ -5,58 +5,100 @@ public class ResetModeTransform : MonoBehaviour
     [Header("Reset Target")]
     [SerializeField] private Transform target;
 
-    private Vector3 startPosition;
-    private Quaternion startRotation;
+    private Transform referenceTransform;
+
+    private Vector3 startOffsetFromReference;
+    private Quaternion startRelativeRotation;
     private Vector3 startScale;
 
-    private bool initialized = false;
+    private bool initialized;
 
-    private void Start()
+    public void Initialize(
+        Transform reference,
+        Transform resetTarget)
     {
-        if (target == null)
-            target = transform;
+        referenceTransform = reference;
 
-        // Capture the transform after the scene has fully initialized.
-        startPosition = target.position;
-        startRotation = target.rotation;
-        startScale = target.localScale;
+        target = resetTarget != null
+            ? resetTarget
+            : transform;
+
+        if (referenceTransform == null)
+        {
+            Debug.LogWarning(
+                $"{name}: Reference Transform is missing."
+            );
+
+            return;
+        }
+
+        // IMPORTANT:
+        // Capture the ORIGINAL relationship now,
+        // before MainUI can be moved.
+        Vector3 worldOffset =
+            target.position -
+            referenceTransform.position;
+
+        startOffsetFromReference =
+            referenceTransform.InverseTransformDirection(
+                worldOffset
+            );
+
+        startRelativeRotation =
+            Quaternion.Inverse(
+                referenceTransform.rotation
+            ) * target.rotation;
+
+        startScale =
+            target.localScale;
 
         initialized = true;
 
         Debug.Log(
-            $"[{name}] RESET START SAVED\n" +
-            $"Position: {startPosition}\n" +
-            $"Rotation: {startRotation.eulerAngles}\n" +
-            $"Scale: {startScale}"
+            $"{name}: Initial reference relationship cached."
         );
     }
 
     public void ResetToDefault()
     {
-        if (!initialized || target == null)
+        if (!initialized)
         {
             Debug.LogWarning(
-                $"[{name}] Reset failed: target not initialized."
+                $"{name}: Reset requested before initialization."
             );
+
             return;
         }
 
-        Debug.Log(
-            $"[{name}] RESETTING\n" +
-            $"Position: {startPosition}\n" +
-            $"Rotation: {startRotation.eulerAngles}\n" +
-            $"Scale: {startScale}"
-        );
+        // -------------------------------------------------
+        // POSITION
+        // -------------------------------------------------
 
-        target.position = startPosition;
-        target.rotation = startRotation;
+        Vector3 currentWorldOffset =
+            referenceTransform.TransformDirection(
+                startOffsetFromReference
+            );
+
+        target.position =
+            referenceTransform.position +
+            currentWorldOffset;
+
+        // -------------------------------------------------
+        // ROTATION
+        // -------------------------------------------------
+
+        target.rotation =
+            referenceTransform.rotation *
+            startRelativeRotation;
+
+        // -------------------------------------------------
+        // SCALE
+        // -------------------------------------------------
+
         target.localScale = startScale;
 
         Debug.Log(
-            $"[{name}] AFTER RESET\n" +
-            $"Position: {target.position}\n" +
-            $"Rotation: {target.rotation.eulerAngles}\n" +
-            $"Scale: {target.localScale}"
+            $"{name}: Reset relative to CURRENT MainUI."
         );
     }
 }

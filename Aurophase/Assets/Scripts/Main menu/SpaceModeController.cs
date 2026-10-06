@@ -12,6 +12,9 @@ public class SpaceModeController : MonoBehaviour
     [SerializeField] private ResetModeTransform solarSystemReset;
     [SerializeField] private ResetModeTransform blackHoleReset;
 
+    [Header("Planet Reset")]
+    [SerializeField] private PlanetModeResetter planetModeResetter;
+
     [Header("Black Hole UI")]
     [SerializeField] private BlackHoleInfoController blackHoleInfoController;
 
@@ -19,6 +22,71 @@ public class SpaceModeController : MonoBehaviour
     [SerializeField] private AurophasePassthroughManager passthroughManager;
 
     private Coroutine modeTransitionCoroutine;
+
+
+    [Header("Spatial Reference")]
+    [SerializeField] private Transform mainUI;
+
+
+
+
+    private void Start()
+    {
+        InitializeModeResets();
+    }
+
+    private void InitializeModeResets()
+    {
+        if (mainUI == null)
+        {
+            Debug.LogError(
+                "SpaceModeController: MainUI is not assigned!"
+            );
+
+            return;
+        }
+
+        // -------------------------------------------------
+        // SOLAR SYSTEM
+        // -------------------------------------------------
+
+        if (solarSystemReset != null)
+        {
+            solarSystemReset.Initialize(
+                mainUI,
+                solarSystemReset.transform
+            );
+        }
+
+        // -------------------------------------------------
+        // BLACK HOLE
+        // -------------------------------------------------
+
+        if (blackHoleReset != null)
+        {
+            blackHoleReset.Initialize(
+                mainUI,
+                blackHoleReset.transform
+            );
+        }
+
+        // -------------------------------------------------
+        // PLANETS
+        // -------------------------------------------------
+
+        if (planetModeResetter != null &&
+            planetMode != null)
+        {
+            planetModeResetter.Initialize(
+                mainUI,
+                planetMode.transform
+            );
+        }
+
+        Debug.Log(
+            "Aurophase mode reset references initialized."
+        );
+    }
 
     // =====================================================
     // PUBLIC BUTTON METHODS
@@ -62,9 +130,8 @@ public class SpaceModeController : MonoBehaviour
             modeTransitionCoroutine = null;
         }
 
-        modeTransitionCoroutine = StartCoroutine(
-            ChangeMode(targetMode)
-        );
+        modeTransitionCoroutine =
+            StartCoroutine(ChangeMode(targetMode));
     }
 
     // =====================================================
@@ -85,7 +152,7 @@ public class SpaceModeController : MonoBehaviour
         );
 
         // -------------------------------------------------
-        // HIDE EVERYTHING
+        // HIDE CURRENT CONTENT
         // -------------------------------------------------
 
         DisableAllModes();
@@ -96,19 +163,14 @@ public class SpaceModeController : MonoBehaviour
 
         if (goingToBlackHole)
         {
-            Debug.Log("Preparing BLACK HOLE...");
+            Debug.Log(
+                "Preparing BLACK HOLE..."
+            );
 
-            // Reset while hidden.
-            if (blackHoleReset != null)
-            {
-                blackHoleReset.ResetToDefault();
+            // -------------------------------------------------
+            // ENVIRONMENT
+            // -------------------------------------------------
 
-                Debug.Log(
-                    "Black Hole transform reset."
-                );
-            }
-
-            // Change environment.
             if (passthroughManager != null)
             {
                 passthroughManager.SetBlackHoleMode();
@@ -118,15 +180,27 @@ public class SpaceModeController : MonoBehaviour
                 );
             }
 
-            // Activate mode.
+            // -------------------------------------------------
+            // ACTIVATE FIRST
+            // -------------------------------------------------
+
             if (blackHoleMode != null)
             {
                 blackHoleMode.SetActive(true);
             }
 
-            // Reset AGAIN after activation.
-            // This guarantees the model is placed correctly
-            // even if another component changed it.
+            // -------------------------------------------------
+            // WAIT ONE FRAME
+            // This allows ResetModeTransform.Start()
+            // to initialize using the CURRENT MainUI position.
+            // -------------------------------------------------
+
+            yield return null;
+
+            // -------------------------------------------------
+            // NOW RESET RELATIVE TO CURRENT MAIN UI
+            // -------------------------------------------------
+
             if (blackHoleReset != null)
             {
                 blackHoleReset.ResetToDefault();
@@ -138,7 +212,7 @@ public class SpaceModeController : MonoBehaviour
         }
 
         // =================================================
-        // NORMAL ENVIRONMENT
+        // NORMAL MODES
         // =================================================
 
         else
@@ -181,23 +255,17 @@ public class SpaceModeController : MonoBehaviour
                     "Preparing SOLAR SYSTEM..."
                 );
 
-                // Reset before activation.
-                if (solarSystemReset != null)
-                {
-                    solarSystemReset.ResetToDefault();
-
-                    Debug.Log(
-                        "Solar System transform reset."
-                    );
-                }
-
-                // Activate.
+                // Activate first.
                 if (solarSystemMode != null)
                 {
                     solarSystemMode.SetActive(true);
                 }
 
-                // Reset AGAIN after activation.
+                // Allow ResetModeTransform.Start()
+                // to initialize.
+                yield return null;
+
+                // Reset relative to CURRENT MainUI position.
                 if (solarSystemReset != null)
                 {
                     solarSystemReset.ResetToDefault();
@@ -214,9 +282,24 @@ public class SpaceModeController : MonoBehaviour
 
             else if (targetMode == Mode.Planets)
             {
+                Debug.Log(
+                    "Preparing PLANETS..."
+                );
+
+                // Activate first.
                 if (planetMode != null)
                 {
                     planetMode.SetActive(true);
+                }
+
+                // Allow PlanetMode and its children
+                // to initialize.
+                yield return null;
+
+                // Reset relative to CURRENT MainUI position.
+                if (planetModeResetter != null)
+                {
+                    planetModeResetter.ResetAllPlanets();
                 }
 
                 Debug.Log(
