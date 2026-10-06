@@ -8,18 +8,15 @@ public class AurophasePassthroughManager : MonoBehaviour
     [Header("Passthrough")]
     [SerializeField] private OVRPassthroughLayer passthroughLayer;
 
+    [Header("Normal Mode")]
     [Range(0f, 1f)]
     [SerializeField] private float normalOpacity = 0.45f;
 
     [Header("Ambient Stars")]
     [SerializeField] private GameObject surroundingStarsVFX;
 
-    [Header("Environment Transition")]
+    [Header("Transition")]
     [SerializeField] private float transitionDuration = 1.2f;
-
-    [Tooltip("Opacity used during the black-hole state.")]
-    [Range(0f, 0.2f)]
-    [SerializeField] private float blackHoleOpacity = 0.02f;
 
     private Coroutine transitionCoroutine;
 
@@ -41,19 +38,20 @@ public class AurophasePassthroughManager : MonoBehaviour
         SetNormalModeImmediate();
     }
 
-    // =====================================================
+    // =========================================================
     // NORMAL MODE - IMMEDIATE
-    // =====================================================
+    // =========================================================
 
     public void SetNormalModeImmediate()
     {
         StopCurrentTransition();
 
-        IsTransitioning = false;
-
         if (passthroughLayer != null)
         {
+            // Keep passthrough running.
             passthroughLayer.enabled = true;
+
+            // Dimmed real-world view.
             passthroughLayer.textureOpacity = normalOpacity;
         }
 
@@ -61,32 +59,38 @@ public class AurophasePassthroughManager : MonoBehaviour
         {
             surroundingStarsVFX.SetActive(true);
         }
+
+        IsTransitioning = false;
     }
 
-    // =====================================================
+    // =========================================================
     // BLACK HOLE MODE - IMMEDIATE
-    // =====================================================
+    // =========================================================
 
     public void SetBlackHoleModeImmediate()
     {
         StopCurrentTransition();
 
-        IsTransitioning = false;
-
         if (passthroughLayer != null)
         {
-            passthroughLayer.enabled = false;
+            // IMPORTANT:
+            // Do NOT disable the passthrough system.
+            // Just make the passthrough image invisible.
+            passthroughLayer.enabled = true;
+            passthroughLayer.textureOpacity = 0f;
         }
 
         if (surroundingStarsVFX != null)
         {
             surroundingStarsVFX.SetActive(false);
         }
+
+        IsTransitioning = false;
     }
 
-    // =====================================================
+    // =========================================================
     // NORMAL MODE - SMOOTH
-    // =====================================================
+    // =========================================================
 
     public void SetNormalMode()
     {
@@ -96,9 +100,9 @@ public class AurophasePassthroughManager : MonoBehaviour
             StartCoroutine(TransitionToNormal());
     }
 
-    // =====================================================
+    // =========================================================
     // BLACK HOLE MODE - SMOOTH
-    // =====================================================
+    // =========================================================
 
     public void SetBlackHoleMode()
     {
@@ -108,9 +112,9 @@ public class AurophasePassthroughManager : MonoBehaviour
             StartCoroutine(TransitionToBlackHole());
     }
 
-    // =====================================================
-    // TRANSITION TO BLACK HOLE
-    // =====================================================
+    // =========================================================
+    // TRANSITION → BLACK HOLE
+    // =========================================================
 
     private IEnumerator TransitionToBlackHole()
     {
@@ -122,10 +126,7 @@ public class AurophasePassthroughManager : MonoBehaviour
             yield break;
         }
 
-        // -------------------------------------------------
-        // 1. Make sure passthrough is visible
-        // -------------------------------------------------
-
+        // Keep the layer alive.
         passthroughLayer.enabled = true;
 
         float startOpacity =
@@ -133,49 +134,30 @@ public class AurophasePassthroughManager : MonoBehaviour
 
         float elapsed = 0f;
 
-        // -------------------------------------------------
-        // 2. Fade normal passthrough -> black
-        // -------------------------------------------------
-
         while (elapsed < transitionDuration)
         {
             elapsed += Time.deltaTime;
 
-            float t =
-                Mathf.Clamp01(
-                    elapsed / transitionDuration
-                );
+            float t = Mathf.Clamp01(
+                elapsed / transitionDuration
+            );
 
-            float smoothT =
-                Mathf.SmoothStep(0f, 1f, t);
+            // Smooth transition instead of linear-looking fade.
+            t = Mathf.SmoothStep(0f, 1f, t);
 
             passthroughLayer.textureOpacity =
                 Mathf.Lerp(
                     startOpacity,
-                    blackHoleOpacity,
-                    smoothT
+                    0f,
+                    t
                 );
 
             yield return null;
         }
 
-        // -------------------------------------------------
-        // 3. Final dark state
-        // -------------------------------------------------
+        passthroughLayer.textureOpacity = 0f;
 
-        passthroughLayer.textureOpacity =
-            blackHoleOpacity;
-
-        // -------------------------------------------------
-        // 4. Disable passthrough completely
-        // -------------------------------------------------
-
-        passthroughLayer.enabled = false;
-
-        // -------------------------------------------------
-        // 5. NOW remove stars
-        // -------------------------------------------------
-
+        // Stars disappear once we enter full black-hole space.
         if (surroundingStarsVFX != null)
         {
             surroundingStarsVFX.SetActive(false);
@@ -184,9 +166,9 @@ public class AurophasePassthroughManager : MonoBehaviour
         FinishTransition();
     }
 
-    // =====================================================
-    // TRANSITION TO NORMAL
-    // =====================================================
+    // =========================================================
+    // TRANSITION → NORMAL
+    // =========================================================
 
     private IEnumerator TransitionToNormal()
     {
@@ -198,76 +180,54 @@ public class AurophasePassthroughManager : MonoBehaviour
             yield break;
         }
 
-        // -------------------------------------------------
-        // 1. Make passthrough available again
-        // -------------------------------------------------
-
         passthroughLayer.enabled = true;
 
-        // Start completely dark.
-        passthroughLayer.textureOpacity =
-            blackHoleOpacity;
-
-        float elapsed = 0f;
-
-        // -------------------------------------------------
-        // 2. Fade black -> normal dimmed passthrough
-        // -------------------------------------------------
-
-        while (elapsed < transitionDuration)
-        {
-            elapsed += Time.deltaTime;
-
-            float t =
-                Mathf.Clamp01(
-                    elapsed / transitionDuration
-                );
-
-            float smoothT =
-                Mathf.SmoothStep(0f, 1f, t);
-
-            passthroughLayer.textureOpacity =
-                Mathf.Lerp(
-                    blackHoleOpacity,
-                    normalOpacity,
-                    smoothT
-                );
-
-            yield return null;
-        }
-
-        // -------------------------------------------------
-        // 3. Final normal passthrough
-        // -------------------------------------------------
-
-        passthroughLayer.textureOpacity =
-            normalOpacity;
-
-        // -------------------------------------------------
-        // 4. NOW bring stars back
-        // -------------------------------------------------
-
+        // Bring our normal ambient stars back.
         if (surroundingStarsVFX != null)
         {
             surroundingStarsVFX.SetActive(true);
         }
 
+        float startOpacity =
+            passthroughLayer.textureOpacity;
+
+        float elapsed = 0f;
+
+        while (elapsed < transitionDuration)
+        {
+            elapsed += Time.deltaTime;
+
+            float t = Mathf.Clamp01(
+                elapsed / transitionDuration
+            );
+
+            t = Mathf.SmoothStep(0f, 1f, t);
+
+            passthroughLayer.textureOpacity =
+                Mathf.Lerp(
+                    startOpacity,
+                    normalOpacity,
+                    t
+                );
+
+            yield return null;
+        }
+
+        passthroughLayer.textureOpacity =
+            normalOpacity;
+
         FinishTransition();
     }
 
-    // =====================================================
-    // FINISH
-    // =====================================================
+    // =========================================================
+    // HELPERS
+    // =========================================================
 
     private void FinishTransition()
     {
         IsTransitioning = false;
         transitionCoroutine = null;
     }
-
-    // =====================================================
-    // STOP CURRENT TRANSITION
-    // =====================================================
 
     private void StopCurrentTransition()
     {
