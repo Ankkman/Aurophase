@@ -12,11 +12,17 @@ public class SpaceModeController : MonoBehaviour
     [SerializeField] private ResetModeTransform solarSystemReset;
     [SerializeField] private ResetModeTransform blackHoleReset;
 
+    [Header("Solar System Spawn")]
+    [SerializeField] private SolarSystemSpawnAligner solarSystemSpawnAligner;
+
     [Header("Planet Reset")]
     [SerializeField] private PlanetModeResetter planetModeResetter;
 
     [Header("Black Hole UI")]
     [SerializeField] private BlackHoleInfoController blackHoleInfoController;
+
+    [Header("Black Hole Spawn")]
+    [SerializeField] private BlackHoleSpawnAligner blackHoleSpawnAligner;
 
     [Header("Passthrough")]
     [SerializeField] private AurophasePassthroughManager passthroughManager;
@@ -94,6 +100,12 @@ public class SpaceModeController : MonoBehaviour
 
     public void ShowSolarSystem()
     {
+        if (solarSystemMode != null &&
+            solarSystemMode.activeSelf)
+        {
+            return;
+        }
+
         StartModeTransition(Mode.SolarSystem);
     }
 
@@ -104,6 +116,14 @@ public class SpaceModeController : MonoBehaviour
 
     public void ShowBlackHole()
     {
+        // If Black Hole mode is already active,
+        // do not reset or realign it.
+        if (blackHoleMode != null &&
+            blackHoleMode.activeSelf)
+        {
+            return;
+        }
+
         StartModeTransition(Mode.BlackHole);
     }
 
@@ -189,21 +209,16 @@ public class SpaceModeController : MonoBehaviour
                 blackHoleMode.SetActive(true);
             }
 
-            // -------------------------------------------------
-            // WAIT ONE FRAME
-            // This allows ResetModeTransform.Start()
-            // to initialize using the CURRENT MainUI position.
-            // -------------------------------------------------
-
             yield return null;
-
-            // -------------------------------------------------
-            // NOW RESET RELATIVE TO CURRENT MAIN UI
-            // -------------------------------------------------
 
             if (blackHoleReset != null)
             {
                 blackHoleReset.ResetToDefault();
+            }
+
+            if (blackHoleSpawnAligner != null)
+            {
+                blackHoleSpawnAligner.AlignOnSpawn();
             }
 
             Debug.Log(
@@ -269,6 +284,11 @@ public class SpaceModeController : MonoBehaviour
                 if (solarSystemReset != null)
                 {
                     solarSystemReset.ResetToDefault();
+                }
+
+                if (solarSystemSpawnAligner != null)
+                {
+                    solarSystemSpawnAligner.AlignOnSpawn();
                 }
 
                 Debug.Log(

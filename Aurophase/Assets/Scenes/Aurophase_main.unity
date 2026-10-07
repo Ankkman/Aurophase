@@ -1178,8 +1178,10 @@ MonoBehaviour:
   blackHoleMode: {fileID: 1633917648}
   solarSystemReset: {fileID: 5362742267236333893}
   blackHoleReset: {fileID: 5878516208924719795}
+  solarSystemSpawnAligner: {fileID: 5362742267236333894}
   planetModeResetter: {fileID: 519370758}
   blackHoleInfoController: {fileID: 5878516208924719793}
+  blackHoleSpawnAligner: {fileID: 5878516208924719797}
   passthroughManager: {fileID: 1016482754}
   mainUI: {fileID: 2101836477}
 --- !u!4 &184192110
@@ -4358,7 +4360,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: The universe is vast.
+  m_text: The universe is closer than you think.
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 324f6328084151e4eb221e725246e6e6, type: 2}
   m_sharedMaterial: {fileID: -2676635503469691628, guid: 324f6328084151e4eb221e725246e6e6, type: 2}
@@ -6892,7 +6894,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Your journey begins here.
+  m_text: Prepare to begin your journey.
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 324f6328084151e4eb221e725246e6e6, type: 2}
   m_sharedMaterial: {fileID: -2676635503469691628, guid: 324f6328084151e4eb221e725246e6e6, type: 2}
@@ -12245,7 +12247,7 @@ Transform:
   m_GameObject: {fileID: 1633917648}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -0, z: 0}
+  m_LocalPosition: {x: 0, y: 0.203, z: 0.028}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -13332,55 +13334,6 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
---- !u!1 &1741923793
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1741923795}
-  - component: {fileID: 1741923794}
-  m_Layer: 0
-  m_Name: Global Volume (1)
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!114 &1741923794
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1741923793}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 172515602e62fb746b5d573b38a5fe58, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.RenderPipelines.Core.Runtime::UnityEngine.Rendering.Volume
-  m_IsGlobal: 1
-  priority: 0
-  blendDistance: 0
-  weight: 1
-  sharedProfile: {fileID: 11400000, guid: 6f1d2f17c1f09ee47a6d0b2894af445a, type: 2}
---- !u!4 &1741923795
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1741923793}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.849, z: 1.316}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1742510696
 GameObject:
   m_ObjectHideFlags: 0
@@ -13562,8 +13515,8 @@ ParticleSystem:
     startLifetime:
       serializedVersion: 2
       minMaxState: 3
-      scalar: 12
-      minScalar: 5
+      scalar: 30
+      minScalar: 15
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -13669,7 +13622,7 @@ ParticleSystem:
       serializedVersion: 2
       minMaxState: 0
       minColor: {r: 1, g: 1, b: 1, a: 1}
-      maxColor: {r: 1, g: 1, b: 1, a: 1}
+      maxColor: {r: 0.92156863, g: 0.9411765, b: 1, a: 1}
       maxGradient:
         serializedVersion: 2
         key0: {r: 1, g: 1, b: 1, a: 1}
@@ -13733,8 +13686,8 @@ ParticleSystem:
     startSize:
       serializedVersion: 2
       minMaxState: 3
-      scalar: 0.1
-      minScalar: 0.03
+      scalar: 0.05
+      minScalar: 0.008
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -14050,7 +14003,7 @@ ParticleSystem:
         m_RotationOrder: 4
     randomizeRotationDirection: 0
     gravitySource: 0
-    maxNumParticles: 500
+    maxNumParticles: 800
     customEmitterVelocity: {x: 0, y: 0, z: 0}
     size3D: 0
     rotation3D: 0
@@ -14197,7 +14150,7 @@ ParticleSystem:
     sphericalDirectionAmount: 0
     randomPositionAmount: 0
     radius:
-      value: 8
+      value: 12
       mode: 0
       spread: 0
       speed:
@@ -14316,7 +14269,7 @@ ParticleSystem:
     rateOverTime:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 60
+      scalar: 45
       minScalar: 10
       maxCurve:
         serializedVersion: 2
@@ -21592,6 +21545,7 @@ GameObject:
   - component: {fileID: 5362742267236333891}
   - component: {fileID: 5362742267236333892}
   - component: {fileID: 5362742267236333893}
+  - component: {fileID: 5362742267236333894}
   m_Layer: 0
   m_Name: SolarSystemModel
   m_TagString: Untagged
@@ -23183,14 +23137,14 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5618637751040144606}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.67524976, y: 0.07762292, z: 0.07180409, w: 0.72997034}
+  m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 0, z: -0}
   m_LocalScale: {x: 1, y: 1, z: 0.99999994}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7869751225651357851}
   m_Father: {fileID: 938186628351458671}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!33 &2299510236176683241
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -26958,7 +26912,7 @@ MonoBehaviour:
   planet: {fileID: 5362742267236333885}
   planetCollider: {fileID: 0}
   surfaceInteractionDistance: 0.15
-  rotationSensitivity: 1
+  rotationSensitivity: 0.6
   minimumVirtualRadius: 0.15
   invertRotation: 0
   smoothing: 15
@@ -27067,6 +27021,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ResetModeTransform
   target: {fileID: 5362742267236333885}
+--- !u!114 &5362742267236333894
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 121441962896177802}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1c552085f020d8a44ab811d65e6acd2e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SolarSystemSpawnAligner
+  solarSystem: {fileID: 5362742267236333885}
+  eyeHeightOffset: 0
+  rotationOffset: {x: 90, y: -90, z: 0}
+  faceUser: 1
 --- !u!1 &5364829529244329335
 GameObject:
   m_ObjectHideFlags: 0
@@ -27654,6 +27624,8 @@ GameObject:
   - component: {fileID: 5878516208924719793}
   - component: {fileID: 5878516208924719794}
   - component: {fileID: 5878516208924719795}
+  - component: {fileID: 5878516208924719796}
+  - component: {fileID: 5878516208924719797}
   m_Layer: 0
   m_Name: Black Hole
   m_TagString: Untagged
@@ -27810,7 +27782,7 @@ MonoBehaviour:
   planet: {fileID: 938186628351458671}
   planetCollider: {fileID: 5878516208924719791}
   surfaceInteractionDistance: 0.15
-  rotationSensitivity: 1
+  rotationSensitivity: 0.6
   minimumVirtualRadius: 0.15
   invertRotation: 0
   smoothing: 15
@@ -27918,6 +27890,43 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ResetModeTransform
   target: {fileID: 938186628351458671}
+--- !u!114 &5878516208924719796
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5878516208924719787}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 98993930cdaa3d44c93a90ae6768bf22, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BlackHoleVisualController
+  accretionDisk: {fileID: 7891454377333670668}
+  einsteinRing: {fileID: 6408948376923587476}
+  einsteinRing2: {fileID: 4450030728530555658}
+  glowingPart: {fileID: 5326403587620382247}
+  accretionDiskSpeed: 18
+  einsteinRingSpeed: 5
+  einsteinRing2Speed: -3
+  enableGlowPulse: 1
+  pulseSpeed: 1.5
+  pulseAmount: 0.035
+--- !u!114 &5878516208924719797
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5878516208924719787}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a478d43bac583184c844debff202391e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BlackHoleSpawnAligner
+  blackHole: {fileID: 938186628351458671}
+  eyeHeightOffset: 0
+  faceUser: 1
 --- !u!1 &5885730832207211095
 GameObject:
   m_ObjectHideFlags: 0
@@ -31426,4 +31435,3 @@ SceneRoots:
   - {fileID: 392713393}
   - {fileID: 184192110}
   - {fileID: 552048768}
-  - {fileID: 1741923795}
